@@ -40,9 +40,9 @@ class clock:
         grid = Table.grid(expand=True,padding=1)
         grid.add_column(justify="center")
         grid.add_row(
-            datetime.now().ctime().replace(":", "[blink]:[/]"),
+            datetime.now().ctime().split()[3],
         )
-        return Panel(grid, style="white")
+        return Panel(grid, style="violet")
 
 class head:
     def __rich__(self) -> Panel:
