@@ -1,4 +1,5 @@
 from datetime import datetime
+from os import listdir
 
 from rich import box
 from rich.align import Align
@@ -43,8 +44,26 @@ class clock:
         )
         return Panel(grid, style="white")
 
+class head:
+    def __rich__(self) -> Panel:
+        grid=Table.grid(expand=True)
+        grid.add_column(justify="center", ratio=1)
+        grid.add_row(
+            "Sap.py",
+        )
+        return Panel(grid, style="blue")
+
+class display:
+    def __rich__(self) -> Panel:
+        grid=Table.grid(expand=True)
+        for index,song in enumerate(listdir('songs')):
+            grid.add_column(justify="left")
+            grid.add_row(f"{index+1}. {song[:-4:]}")
+        return Panel(grid)
+
 layout=make_layout()
 layout["clock"].update(clock())
+layout["head"].update(head())
 
 with Live(layout, refresh_per_second=20, screen=True):
     while True:
