@@ -25,11 +25,13 @@ def make_layout() -> Layout:
     )
 
     layout["body"].split_row(
-        Layout(name="display", ratio=7), Layout(name="panel", ratio=2)
+        Layout(name="display", ratio=7),
+        Layout(name="panel", ratio=2)
     )
 
     layout["foot"].split_row(
-        Layout(name="input", ratio=7), Layout(name="clock", ratio=2)
+        Layout(name="input", ratio=7), 
+        Layout(name="clock", ratio=2)
     )
 
     return layout
