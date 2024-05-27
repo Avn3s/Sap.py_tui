@@ -56,14 +56,15 @@ class head:
 class display:
     def __rich__(self) -> Panel:
         grid=Table.grid(expand=True)
+        grid.add_column(justify="left")
         for index,song in enumerate(listdir('songs')):
-            grid.add_column(justify="left")
             grid.add_row(f"{index+1}. {song[:-4:]}")
-        return Panel(grid)
+        return Panel(grid, style='blue')
 
 layout=make_layout()
 layout["clock"].update(clock())
 layout["head"].update(head())
+layout["display"].update(display())
 
 with Live(layout, refresh_per_second=20, screen=True):
     while True:
