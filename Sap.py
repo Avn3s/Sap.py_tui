@@ -1,5 +1,7 @@
 from datetime import datetime
 from os import listdir
+from pynput import keyboard
+
 
 from rich import box
 from rich.align import Align
@@ -15,12 +17,17 @@ from time import sleep
 console = Console()
 
 
+chunk_size = 7
+result_dict = {i//chunk_size + 1: listdir("songs")[i:i+chunk_size] for i in range(0, len(listdir("songs")), chunk_size)}
+page_no=1
+
 def make_layout() -> Layout:
+    global chunk_size
     layout = Layout(name="screen")
 
     layout.split(
         Layout(name="head", size=3),
-        Layout(name="body", ratio=7),
+        Layout(name="body", size=chunk_size+2),
         Layout(name="foot", size=6),
     )
 
@@ -59,18 +66,18 @@ class head:
 
 class display:
     def __rich__(self) -> Panel:
-        grid = Table.grid(expand=True)
-        grid.add_column(justify="left")
-        for index, song in enumerate(listdir("songs")):
-            grid.add_row(f"{index+1}. {song[:-4:]}")
-        return Panel(grid, style="blue")
-
+        global chunk_size, result_dict, page_no
+        table = Table.grid(expand=True)
+        table.add_column(justify="left")
+        for index, song in enumerate(result_dict[page_no], 1):
+            table.add_row(f"{index}. {song[:-4:]}")
+        return Panel(table, style="blue")
 
 layout = make_layout()
 layout["clock"].update(clock())
 layout["head"].update(head())
 layout["display"].update(display())
 
-with Live(layout, refresh_per_second=20, screen=True):
+with Live(layout, refresh_per_second=20, screen=True) as live:
     while True:
-        sleep(0.1)
+        live.update(layout)
