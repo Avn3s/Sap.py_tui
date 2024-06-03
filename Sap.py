@@ -1,7 +1,6 @@
 from datetime import datetime
 from os import listdir
-from pynput import keyboard
-
+from keyboard import is_pressed,read_key
 
 from rich import box
 from rich.align import Align
@@ -16,10 +15,11 @@ from time import sleep
 
 console = Console()
 
-
+cmd=""
 chunk_size = 7
 result_dict = {i//chunk_size + 1: listdir("songs")[i:i+chunk_size] for i in range(0, len(listdir("songs")), chunk_size)}
 page_no=1
+
 
 def make_layout() -> Layout:
     global chunk_size
@@ -72,12 +72,34 @@ class display:
         for index, song in enumerate(result_dict[page_no], 1):
             table.add_row(f"{index}. {song[:-4:]}")
         return Panel(table, style="blue")
-
+'''
+class input:
+    def __rich__(self)->Panel:
+        global cmd
+        key=''
+        if read_key()=='backspace':
+            key+="\b"
+        elif read_key()=='enter':
+            cmd=key
+            key=""
+        elif read_key()=='space':
+            key+=' '
+        elif read_key()=='capslock':
+            pass
+        table=Table.grid(expand=True)
+        table.add_column(justify="left")
+        table.add_row(f"> {key}")
+        return Panel(table)
+'''
 layout = make_layout()
 layout["clock"].update(clock())
 layout["head"].update(head())
 layout["display"].update(display())
+#layout["input"].update(input())
 
-with Live(layout, refresh_per_second=20, screen=True) as live:
+with Live(layout, refresh_per_second=5, screen=True) as live:
     while True:
-        live.update(layout)
+        if is_pressed('q'):
+            exit()
+        else:
+            live.update(layout)
